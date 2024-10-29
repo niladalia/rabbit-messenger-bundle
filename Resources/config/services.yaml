@@ -1,0 +1,19 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  RabbitMessengerBundle\Infrastructure\RabbitDomainEventPublisher:
+    public: true
+    arguments:
+      $bus: '@messenger.bus.event.async'
+
+  RabbitMessengerBundle\Domain\Event\DomainEventPublisherInterface:
+    alias: RabbitMessengerBundle\Infrastructure\RabbitDomainEventPublisher
+    public: true
+
+  RabbitMessengerBundle\Infrastructure\Serializer\MessengerSerializer:
+    public: true
+
+  serializer.amqp:
+    class: RabbitMessengerBundle\Infrastructure\Serializer\MessengerSerializer

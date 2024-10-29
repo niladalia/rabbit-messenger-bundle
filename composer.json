@@ -1,0 +1,26 @@
+{
+  "name": "niladalia/rabbit-messenger-bundle",
+  "description": "A simple Symfony bundle that says 'Hello, World!'",
+  "type": "symfony-bundle",
+  "autoload": {
+    "psr-4": {
+      "RabbitMessengerBundle\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "symfony/framework-bundle": "^5.0|^6.0|^7.0|^8.0",
+    "symfony/amqp-messenger": "^5.0|^6.0|^7.0|^8.0",
+    "symfony/messenger": "^5.0|^6.0|^7.0|^8.0",
+    "symfony/monolog-bundle": "^3.10"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-main": "1.x-dev"
+    },
+    "symfony": {
+      "resource": "Resources/config",
+      "config": "services.yaml"
+    }
+  }
+}
