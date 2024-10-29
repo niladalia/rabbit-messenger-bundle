@@ -14,7 +14,7 @@ final class RabbitDomainEventPublisher implements DomainEventPublisherInterface
     public const AMQP_NOPARAM = 0;
     public const AMQP_DURABLE = 2;
 
-    public function __construct(private MessageBusInterface $bus, private LoggerInterface $logger)
+    public function __construct(private MessageBusInterface $bus)
     {
     }
 
@@ -22,8 +22,6 @@ final class RabbitDomainEventPublisher implements DomainEventPublisherInterface
     {
         foreach ($domainEvents as $domainEvent) {
 
-            $this->logger->info(sprintf("Publishing event with binding key : %s", $domainEvent::eventName()));
-            
             $routingKey = $domainEvent::eventName();
             $amqpStamp = [
                 new AmqpStamp(
