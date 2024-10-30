@@ -6,24 +6,25 @@ use RabbitMessengerBundle\Domain\Event\Mapper\DomainEventMapperInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
-final class MessengerSerializer implements  SerializerInterface
+final class MessengerSerializer implements SerializerInterface
 {
-
-
-    public function __construct(private DomainEventMapperInterface $mapper)
+    public function __construct(private ?DomainEventMapperInterface $mapper = null)
     {
-
     }
 
     public function decode(array $encodedEnvelope): Envelope
     {
-        $decodedEnvelope =  json_decode($encodedEnvelope['body'], true);
+        $decodedEnvelope = json_decode($encodedEnvelope['body'], true);
 
-        $mapDataResponse = $this->mapper->map($decodedEnvelope);
+        if ($this->mapper) {
+            $mapDataResponse = $this->mapper->map($decodedEnvelope);
+            $className = $mapDataResponse->class();
 
-        $className =  $mapDataResponse->class();
+            return new Envelope($className::deserialize(...$mapDataResponse->map()));
+        }
 
-        return new Envelope($className::deserialize(...$mapDataResponse->map()));
+        // Handle decoding without a mapper
+        throw new \LogicException('Mapper is required for decoding.');
     }
 
     public function encode(Envelope $envelope): array
@@ -36,8 +37,8 @@ final class MessengerSerializer implements  SerializerInterface
                 'aggregate_id' => $message->aggregateId(),
                 'type' => $message->eventName(),
                 'attributes' => $message->serialize(),
-                'occurred_on' => $message->occurredOn()
-            ])
+                'occurred_on' => $message->occurredOn(),
+            ]),
         ];
     }
 }
